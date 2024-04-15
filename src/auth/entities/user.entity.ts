@@ -6,7 +6,9 @@ export class User {
     @PrimaryGeneratedColumn('uuid')
     user_id:string;
     
-    @Column('varchar')
+    @Column('varchar',{
+        nullable:true,
+    })
     names:string;
 
     @Column('varchar',{
@@ -27,7 +29,7 @@ export class User {
     })
     document:string;
     
-    @Column('text')
+    @Column('varchar')
     document_type:string;
 
     @Column('int',{

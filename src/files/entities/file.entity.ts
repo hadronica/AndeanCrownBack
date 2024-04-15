@@ -15,7 +15,7 @@ export class File{
     @Column('varchar')
     path:string;
     
-    @Column('number',{
+    @Column('int',{
         default:0
     })
     downloaded:number;

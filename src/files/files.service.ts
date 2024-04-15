@@ -17,7 +17,7 @@ export class FilesService {
 
     findAll() {
         try {
-            const files = this.userRepository.find({relations:['file'],where:{roles:'user'}});
+            const files = this.userRepository.find({relations:['file'],where:{roles:'User'}});
             return files;
         } catch (error) {
             this.handleErrors(error,'findAll');

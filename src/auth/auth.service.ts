@@ -160,6 +160,7 @@ export class AuthService {
       });
       return {
         message:'User verified successfully',
+        email:user.email,
         token:this.getJwtToken({user_id:user.user_id})
       };
     } catch (error) {

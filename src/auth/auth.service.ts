@@ -134,10 +134,11 @@ export class AuthService {
       await this.userRepository.update(user.user_id,{
         password:hashSync(password,10),
         token:null,
+        status:0
       });
       return {
         message:'User verified successfully',
-        toke:this.getJwtToken({user_id:user.user_id})
+        token:this.getJwtToken({user_id:user.user_id})
       };
     } catch (error) {
       console.log(error);

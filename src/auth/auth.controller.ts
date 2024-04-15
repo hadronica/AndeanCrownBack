@@ -5,7 +5,9 @@ import { UpdateUserDto } from './dto/update-auth.dto';
 import { LoginUserDto } from './dto/login-user.dto';
 import { ValidRoles } from './interfaces/valid-roles';
 import { Auth } from './decorators/auth.decorator';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -39,7 +41,7 @@ export class AuthController {
   }
 
   @Post('verify')
-  verifyUser(@Headers('token') token:string,@Body() body){
+  verifyUser(@Headers('Token') token:string,@Body() body){
     return this.authService.verifyUser(token,body);
   }
 
@@ -49,7 +51,7 @@ export class AuthController {
   }
 
   @Put('reset-password')
-  resetPassword(@Headers('token') token:string,@Body() body){
+  resetPassword(@Headers('Token') token:string,@Body() body){
     return this.authService.resetPassword(token,body);
   }
 }

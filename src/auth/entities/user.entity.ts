@@ -7,7 +7,7 @@ export class User {
     user_id:string;
     
     @Column('varchar')
-    full_name:string;
+    names:string;
 
     @Column('varchar',{
         nullable:true,
@@ -22,10 +22,10 @@ export class User {
     })
     email:string;
     
-    @Column('int',{
+    @Column('varchar',{
         unique:true,
     })
-    document:number;
+    document:string;
     
     @Column('text')
     document_type:string;

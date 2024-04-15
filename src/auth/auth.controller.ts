@@ -10,12 +10,18 @@ import { Auth } from './decorators/auth.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Get('list')
+  @Auth(ValidRoles.admin)
+  findAll() {
+    return this.authService.findAll();
+  }
+
   @Post('register')
   create(@Body() createUserDto: CreateUserDto) {
     return this.authService.create(createUserDto);
   }
 
-  @Get('login')
+  @Post('login')
   login(@Body() loginUserDto: LoginUserDto){
     return this.authService.login(loginUserDto);
   }
@@ -32,12 +38,12 @@ export class AuthController {
     return this.authService.update(updateUserDto);
   }
 
-  @Get('verify')
+  @Post('verify')
   verifyUser(@Headers('token') token:string,@Body() body){
     return this.authService.verifyUser(token,body);
   }
 
-  @Get('forgot-password')
+  @Post('forgot-password')
   forgotPassword(@Body() email:string){
     return this.authService.forgotPassword(email);
   }

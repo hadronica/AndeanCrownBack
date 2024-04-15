@@ -14,10 +14,16 @@ export class File{
 
     @Column('varchar')
     path:string;
+    
+    @Column('number',{
+        default:0
+    })
+    downloaded:number;
 
     @ManyToOne(
         ()=>User,
         (user)=>user.file
+
     )
     @JoinColumn({name:'user_id'})
     user:User

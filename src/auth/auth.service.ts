@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import {  Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
@@ -11,6 +11,7 @@ import { JwtPayload } from './interfaces/jwt-interface';
 import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { customAlphabet } from 'nanoid';
+import { CreateUserMail } from './utility/createUserMail';
 
 @Injectable()
 export class AuthService {
@@ -22,19 +23,40 @@ export class AuthService {
     private readonly jwtService:JwtService,
     private readonly mailerService:MailerService
   ){}
+
+  async findAll() {
+    try {
+      const users = await this.userRepository.find({
+        select:{password:false}
+      });
+      return users;
+    } catch (error) {
+      this.handleErrors(error,'findAll');
+    }
+  }
+  
   async create(createUserDto: CreateUserDto) {
     try {
       const {...userData}=createUserDto;
       const tokenVerification=customAlphabet(this.alphabet,10)();
       const user=this.userRepository.create({
-        ...userData,
-        token:tokenVerification
+        names:userData.names,
+        phone:userData.phone,
+        email:userData.email,
+        document_type:userData.typeDocument,
+        document:userData.numberDocument,
+        type_account:userData.typeAccount,
+        roles:userData.permissionAccount,
+        token:tokenVerification,
+        status:1
       });
       await this.userRepository.save(user);
+      const url= `${process.env.CONFIRMATION_URL}?token=${tokenVerification}` 
+
       await this.mailerService.sendMail({
         to:user.email,
         subject:'Se ha creado una cuenta para usted',
-        html:`<h1>Token de verificación: ${tokenVerification}</h1>`
+        html:CreateUserMail(userData.names,url)
       })
       return {
         message:'User created successfully',
@@ -118,7 +140,7 @@ export class AuthService {
 
   async verifyUser(token:string,body:any){
     try {
-      const {password,passwordConfirmed}=body;
+      const {password,repeatPassword}=body;
       const user=await this.userRepository.findOne({
         where:{token}
       });
@@ -128,7 +150,7 @@ export class AuthService {
       if(user.token!==token){
         throw new UnauthorizedException('Invalid token');
       }
-      if(password!==passwordConfirmed){
+      if(password!==repeatPassword){
         throw new UnauthorizedException('Passwords do not match');
       }
       await this.userRepository.update(user.user_id,{
@@ -189,7 +211,7 @@ export class AuthService {
 
   async resetPassword(token:string,body:any){
     try {
-      const {password,passwordConfirmed}=body;
+      const {password,repeatPassword}=body;
       const user=await this.userRepository.findOne({
         where:{token}
       });
@@ -202,7 +224,7 @@ export class AuthService {
       if(user.token_expire.getTime()<Date.now()){
         throw new UnauthorizedException('Token expired');
       }
-      if(password!==passwordConfirmed){
+      if(password!==repeatPassword){
         throw new UnauthorizedException('Passwords do not match');
       }
       await this.userRepository.update(user.user_id,{

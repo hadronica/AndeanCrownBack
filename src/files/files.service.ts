@@ -15,12 +15,35 @@ export class FilesService {
         private readonly userRepository: Repository<User>
     ){}
 
-    findAll() {
+    async findAll() {
         try {
-            const files = this.userRepository.find({relations:['file'],where:{roles:'User'}});
+            const files = await this.userRepository.find({relations:['file'],where:{roles:'User'}});
             return files;
         } catch (error) {
             this.handleErrors(error,'findAll');
+        }
+    }
+
+    async find(user_id:string){
+        try {
+            const files = await this.fileRepository.find({where:{user:{user_id}}});
+            return files;
+        } catch (error) {
+            this.handleErrors(error,'find');
+        }
+    }
+
+    async downloaded(file_id:string){
+        try {
+            const file = await this.fileRepository.findOne({where:{file_id}});
+            if(!file){
+                throw new InternalServerErrorException('File not found');
+            }
+
+            await this.fileRepository.update({file_id},{downloaded:file.downloaded+1});
+            return file;
+        } catch (error) {
+            this.handleErrors(error,'downloaded');
         }
     }
 
@@ -34,8 +57,8 @@ export class FilesService {
 
     async upload(createFileDto:CreateFileDto) {
         try {
-            const {document,urlStatementAccount,emailUser} = createFileDto;
-            const user = await this.userRepository.findOne({where:{document:document}});
+            const {numberDocumentUser,urlStatementAccount,emailUser} = createFileDto;
+            const user = await this.userRepository.findOne({where:{document:numberDocumentUser,email:emailUser}});
             if(!user){
                 throw new InternalServerErrorException('User not found');
             }

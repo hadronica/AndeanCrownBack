@@ -3,7 +3,7 @@ import { IsEmail, IsIn, IsNumber, IsOptional, IsString } from "class-validator";
 export class CreateUserDto {
     @IsString()
     @IsOptional()
-    full_name:string;
+    names:string;
 
     @IsString()
     phone:string;
@@ -13,15 +13,15 @@ export class CreateUserDto {
     email:string;
 
     @IsString()
-    document_type:string;
+    typeDocument:string;
 
     @IsNumber()
-    document:number;
+    numberDocument:string;
 
     @IsString()
     @IsIn(['J','N'])
     @IsOptional()
-    type_account:string;
+    typeAccount:string;
     
     @IsOptional()
     user_id?:string;
@@ -31,11 +31,11 @@ export class CreateUserDto {
 
     @IsString()
     @IsIn(['User','Admin'])
-    roles:string;
+    permissionAccount:string;
 
     @IsString()
     @IsOptional()
-    legal_representation:string;
+    legalRepresentation:string;
 
     @IsNumber()
     @IsIn([0,1,2])

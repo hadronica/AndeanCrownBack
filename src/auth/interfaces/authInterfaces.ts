@@ -1,7 +1,7 @@
 export interface iUser {
-  email:string;
-  phone:string;
   names?:string;
+  phone:string;
+  email:string;
   typeDocument: string;
   numberDocument:string;
   typeAccount: "J" | "N"; //J es persona jurídica y N es persona natural

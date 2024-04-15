@@ -30,6 +30,6 @@ export class UserRoleGuard implements CanActivate {
         return true;
     }
 
-    throw new ForbiddenException(`User ${user.full_name} not authorized to access this route`)
+    throw new ForbiddenException(`User ${user.names} not authorized to access this route`)
   }
 }

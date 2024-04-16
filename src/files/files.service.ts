@@ -29,6 +29,7 @@ export class FilesService {
             const files = await this.fileRepository.find({where:{user:{user_id}}});
             return files;
         } catch (error) {
+            console.log(error);
             this.handleErrors(error,'find');
         }
     }

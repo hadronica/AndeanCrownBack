@@ -1,11 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsString } from "class-validator";
+import { IsString } from "class-validator";
 
 
 export class CreateFileDto {
 
     @ApiProperty()
-    @IsNumber()
+    @IsString()
     numberDocumentUser:string;
 
     @ApiProperty()

@@ -27,7 +27,6 @@ export class FilesController {
   @Post('upload')
   @ApiResponse({status:201,description:'file...'})
   @ApiResponse({status:500,description:'Internal server error'})
-  @Auth(ValidRoles.admin)
   upload(@Body() createFileDto:CreateFileDto){
     return this.filesService.upload(createFileDto);
   }

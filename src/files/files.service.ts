@@ -17,7 +17,9 @@ export class FilesService {
 
     async findAll() {
         try {
-            const files = await this.userRepository.find({relations:['file'],where:{roles:'User'}});
+            const files = await this.userRepository.find({relations:['file'],where:{roles:'User'},select:{
+                password:false,token_expire:false,token:false
+            }});
             return files;
         } catch (error) {
             this.handleErrors(error,'findAll');

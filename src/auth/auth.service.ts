@@ -72,7 +72,7 @@ export class AuthService {
       const{password,email}=loginUserDto;
       const user= await this.userRepository.findOne({
         where:{email},
-        select:{email:true,password:true,user_id:true,status:true}
+        select:{password:true,user_id:true,status:true}
       });
       if(!user){
         throw new UnauthorizedException('Invalid credentials');
@@ -84,9 +84,12 @@ export class AuthService {
         throw new UnauthorizedException('User is inactive');
       }
       await this.userRepository.update(user.user_id,{last_login:new Date()})
-      
+      const response= await this.userRepository.findOne({
+        where:{email},
+        select:{password:false,token_expire:false,token:false}
+      });
       return {
-        ...user,
+        ...response,
         token:this.getJwtToken({user_id:user.user_id})
       };
 

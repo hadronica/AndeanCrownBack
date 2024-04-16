@@ -15,4 +15,8 @@ export class CreateFileDto {
     @ApiProperty()
     @IsString()
     emailUser:string;
+
+    @ApiProperty()
+    @IsString()
+    nameDocument:string;
 }

@@ -60,13 +60,14 @@ export class FilesService {
 
     async upload(createFileDto:CreateFileDto) {
         try {
-            const {numberDocumentUser,urlStatementAccount,emailUser} = createFileDto;
+            const {numberDocumentUser,urlStatementAccount,emailUser,nameDocument} = createFileDto;
             const user = await this.userRepository.findOne({where:{document:numberDocumentUser,email:emailUser}});
             if(!user){
                 throw new InternalServerErrorException('User not found');
             }
             const file=this.fileRepository.create({
                 path:urlStatementAccount,
+                name:nameDocument,
                 user:user
             });
             await this.fileRepository.save(file);

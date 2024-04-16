@@ -15,6 +15,9 @@ export class File{
     @Column('varchar')
     path:string;
     
+    @Column('varchar')
+    name:string;
+
     @Column('int',{
         default:0
     })

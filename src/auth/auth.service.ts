@@ -27,7 +27,10 @@ export class AuthService {
   async findAll() {
     try {
       const users = await this.userRepository.find({
-        select:{password:false}
+        select:{password:false},
+        where:{
+          roles:'User'
+        }
       });
       return users;
     } catch (error) {

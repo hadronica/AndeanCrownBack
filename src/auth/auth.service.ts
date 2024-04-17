@@ -12,6 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import { MailerService } from '@nestjs-modules/mailer';
 import { customAlphabet } from 'nanoid';
 import { CreateUserMail } from './utility/createUserMail';
+import { restartPasswordMail } from './utility/restartPasswordMail';
 
 @Injectable()
 export class AuthService {
@@ -206,7 +207,7 @@ export class AuthService {
       await this.mailerService.sendMail({
         to:user.email,
         subject:'Recuperación de contraseña',
-        html:`<h1>Token de recuperación: ${token}</h1>`
+        html:restartPasswordMail(user.names,`${process.env.RECOVERY_URL}?token=${token}`)
       })
       return {
         message:'Token sent successfully'

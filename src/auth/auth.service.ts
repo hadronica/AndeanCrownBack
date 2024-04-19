@@ -102,49 +102,6 @@ export class AuthService {
     }
   }
 
-  async updateUser(UpdateUserDto: UpdateUserDto) {
-    try {
-      const {...userData}=UpdateUserDto;
-      const user=await this.userRepository.findOne({
-        where:{user_id:userData.user_id}
-      });
-      if(!user){
-        throw new UnauthorizedException('User not found');
-      }
-      await this.userRepository.update(user.user_id,userData);
-      const response= await this.userRepository.findOne({
-        where:{user_id:userData.user_id}
-      });
-      return {
-        ...response,
-      };
-    } catch (error) {
-      this.handleErrors(error,'update');
-    }
-    
-  }
-
-  async update(UpdateUserDto: UpdateUserDto) {
-    try {
-      const {...userData}=UpdateUserDto;
-      const user=await this.userRepository.findOne({
-        where:{user_id:userData.user_id}
-      });
-      if(!user){
-        throw new UnauthorizedException('User not found');
-      }
-      await this.userRepository.update(user.user_id,userData);
-      const response= await this.userRepository.findOne({
-        where:{user_id:userData.user_id}
-      });
-      return {
-        ...response,
-      };
-    } catch (error) {
-      this.handleErrors(error,'update');
-    }
-  }
-
   async verifyUser(token:string,body:any){
     try {
       const {password,repeatPassword}=body;
@@ -176,7 +133,7 @@ export class AuthService {
     }
   }
 
-  async delete(user_id:string) {
+  async blockUser(user_id:string) {
     try {
       const user=await this.userRepository.findOne({
         where:{user_id}
@@ -185,6 +142,40 @@ export class AuthService {
         throw new UnauthorizedException('User not found');
       }
       await this.userRepository.update(user.user_id,{status:2})
+      return {
+        message:'User deleted successfully'
+      };
+    } catch (error) {
+      this.handleErrors(error,'delete');
+    }
+  }
+
+  async unblockUser(user_id:string) {
+    try {
+      const user=await this.userRepository.findOne({
+        where:{user_id}
+      });
+      if(!user){
+        throw new UnauthorizedException('User not found');
+      }
+      await this.userRepository.update(user.user_id,{status:1})
+      return {
+        message:'User unblocked successfully'
+      };
+    } catch (error) {
+      this.handleErrors(error,'unblock');
+    }
+  }
+
+  async delete(user_id:string) {
+    try {
+      const user=await this.userRepository.findOne({
+        where:{user_id}
+      });
+      if(!user){
+        throw new UnauthorizedException('User not found');
+      }
+      await this.userRepository.delete(user.user_id)
       return {
         message:'User deleted successfully'
       };

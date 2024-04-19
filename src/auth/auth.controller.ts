@@ -19,6 +19,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @Auth(ValidRoles.admin)
   @ApiResponse({status:201,description:'User created successfully'})
   @ApiResponse({status:400,description:'USER already exists'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -33,18 +34,6 @@ export class AuthController {
   @ApiResponse({status:500,description:'Internal server error'})
   login(@Body() loginUserDto: LoginUserDto){
     return this.authService.login(loginUserDto);
-  }
-
-  @Put('manage')
-  @Auth(ValidRoles.admin)
-  updateUser(@Body() updateUserDto:UpdateUserDto){
-    return this.authService.updateUser(updateUserDto);
-  }
-
-  @Put('edit')
-  @Auth(ValidRoles.admin,ValidRoles.user)
-  update(@Body() updateUserDto:UpdateUserDto){
-    return this.authService.update(updateUserDto);
   }
 
   @Post('verify')
@@ -71,4 +60,32 @@ export class AuthController {
   resetPassword(@Headers('Token') token:string,@Body() body){
     return this.authService.resetPassword(token,body);
   }
+
+  @Put('block')
+  @Auth(ValidRoles.admin)
+  @ApiResponse({status:201,description:'User blocked successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  blockUser(@Headers('Token') token:string){
+    return this.authService.blockUser(token);
+  }
+
+  @Put('unblock')
+  @Auth(ValidRoles.admin)
+  @ApiResponse({status:201,description:'User unblocked successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  unblockUser(@Headers('Token') token:string){
+    return this.authService.unblockUser(token);
+  }
+
+  @Put('delete')
+  @Auth(ValidRoles.admin)
+  @ApiResponse({status:201,description:'User deleted successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  deleteUser(@Headers('Token') token:string){
+    return this.authService.delete(token);
+  }
+
 }

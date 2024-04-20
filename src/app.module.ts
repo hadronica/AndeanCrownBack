@@ -26,6 +26,7 @@ import { FilesModule } from './files/files.module';
     MailerModule.forRoot({
       transport:{
         host: process.env.MAIL_HOST,
+        port: +process.env.MAIL_PORT,
         secure: false,
         auth:{
           user:process.env.MAIL_USER,

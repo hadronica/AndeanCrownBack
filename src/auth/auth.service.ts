@@ -59,7 +59,7 @@ export class AuthService {
 
       await this.mailerService.sendMail({
         to:user.email,
-        subject:'Se ha creado una cuenta para usted',
+        subject:'Andean Crown SAF ha creado tu cuenta',
         html:CreateUserMail(userData.names,url)
       })
       return {
@@ -197,7 +197,7 @@ export class AuthService {
       await this.userRepository.update(user.user_id,{token,token_expire:tokenExpiration});
       await this.mailerService.sendMail({
         to:user.email,
-        subject:'Recuperación de contraseña',
+        subject:'Andean Crown - Recuperación de contraseña',
         html:restartPasswordMail(user.names,`${process.env.RECOVERY_URL}?token=${token}`)
       })
       return {

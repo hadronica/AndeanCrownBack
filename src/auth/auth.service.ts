@@ -58,6 +58,7 @@ export class AuthService {
       const url= `${process.env.CONFIRMATION_URL}?token=${tokenVerification}` 
 
       await this.mailerService.sendMail({
+        from:process.env.MAIL_USER,
         to:user.email,
         subject:'Andean Crown SAF ha creado tu cuenta',
         html:CreateUserMail(userData.names,url)
@@ -67,6 +68,7 @@ export class AuthService {
       };
       
     } catch (error) {
+      console.log(error);
       this.handleErrors(error,'create')
     }
   }
@@ -196,6 +198,7 @@ export class AuthService {
       const tokenExpiration=new Date(Date.now()+300000);
       await this.userRepository.update(user.user_id,{token,token_expire:tokenExpiration});
       await this.mailerService.sendMail({
+        from:process.env.MAIL_USER,
         to:user.email,
         subject:'Andean Crown - Recuperación de contraseña',
         html:restartPasswordMail(user.names,`${process.env.RECOVERY_URL}?token=${token}`)
@@ -245,7 +248,7 @@ export class AuthService {
   }
 
   private handleErrors(error: any,type:string):never{
-    if(error.errno===1062){
+    if(error.code==='23505'){
       throw new BadRequestException(`USER already exists`)
     }
     if(error.status===401){

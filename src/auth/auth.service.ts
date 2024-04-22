@@ -89,7 +89,9 @@ export class AuthService {
       if(user.status!==0){
         throw new UnauthorizedException('User is inactive');
       }
-      await this.userRepository.update(user.user_id,{last_login:new Date()})
+      const lastLogin= new Date();
+      lastLogin.setTime(lastLogin.getTime() - (5 * 60 * 60 * 1000));
+      await this.userRepository.update(user.user_id,{last_login:lastLogin})
       const response= await this.userRepository.findOne({
         where:{email},
         select:{password:false,token_expire:false,token:false}
@@ -239,6 +241,26 @@ export class AuthService {
       };
     } catch (error) {
       this.handleErrors(error,'resetPassword');
+    }
+  }
+
+  async editUser(userData:User,updateUserDto: UpdateUserDto){
+    try {
+      const {password}=updateUserDto;
+      const user=await this.userRepository.findOne({
+        where:{user_id:userData.user_id}
+      });
+      if(!user){
+        throw new UnauthorizedException('User not found');
+      }
+      await this.userRepository.update(user.user_id,{
+        password:hashSync(password,10)
+      });
+      return {
+        message:'Password edited successfully'
+      };
+    } catch (error) {
+      this.handleErrors(error,'editUser');
     }
   }
 

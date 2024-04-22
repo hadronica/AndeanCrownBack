@@ -6,6 +6,7 @@ import { LoginUserDto } from './dto/login-user.dto';
 import { ValidRoles } from './interfaces/valid-roles';
 import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { GetUser } from './decorators/get-user.decorator';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -86,6 +87,15 @@ export class AuthController {
   @ApiResponse({status:500,description:'Internal server error'})
   deleteUser(@Headers('Token') token:string){
     return this.authService.delete(token);
+  }
+
+  @Put('edit')
+  @Auth(ValidRoles.admin,ValidRoles.user)
+  @ApiResponse({status:201,description:'User edited successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  editUser(@GetUser() user,@Body() updateUserDto: UpdateUserDto){
+    return this.authService.editUser(user,updateUserDto);
   }
 
 }

@@ -19,7 +19,7 @@ export class FilesService {
         try {
             const files = await this.userRepository.find({relations:['file'],where:{roles:'User'},select:{
                 password:false,token_expire:false,token:false
-            }});
+            },order:{file:{created_At:'ASC'}}});
             return files;
         } catch (error) {
             this.handleErrors(error,'findAll');
@@ -28,10 +28,9 @@ export class FilesService {
 
     async find(user_id:string){
         try {
-            const files = await this.fileRepository.find({where:{user:{user_id}}});
+            const files = await this.fileRepository.find({where:{user:{user_id}},order:{created_At:'ASC'}});
             return files;
         } catch (error) {
-            console.log(error);
             this.handleErrors(error,'find');
         }
     }

@@ -64,7 +64,7 @@ export class User {
     token_expire:Date;
 
     @Column('timestamp',{
-        default:()=> 'CURRENT_TIMESTAMP'
+        default:()=> 'CURRENT_TIMESTAMP - INTERVAL 5 HOUR', 
     })
     created_at:Date;
 

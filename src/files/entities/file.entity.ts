@@ -8,7 +8,7 @@ export class File{
     file_id:string;
 
     @Column('timestamp',{
-        default:()=> 'CURRENT_TIMESTAMP'
+        default:()=> 'CURRENT_TIMESTAMP - INTERVAL 5 HOUR'
     })
     created_At:Date;
 

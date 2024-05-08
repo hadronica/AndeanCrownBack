@@ -49,8 +49,8 @@ export class AuthController {
   @ApiResponse({status:201,description:'Token sent successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
-  forgotPassword(@Body() email:string){
-    return this.authService.forgotPassword(email);
+  forgotPassword(@Body() body){
+    return this.authService.forgotPassword(body);
   }
 
   @Put('reset-password')

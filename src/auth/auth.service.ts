@@ -188,10 +188,11 @@ export class AuthService {
     }
   }
 
-  async forgotPassword(email:string){
+  async forgotPassword(body){
     try {
+      const {...userData}=body;
       const user=await this.userRepository.findOne({
-        where:{email}
+        where:{email:userData.email}
       });
       if(!user){
         throw new UnauthorizedException('User not found');
@@ -209,6 +210,7 @@ export class AuthService {
         message:'Token sent successfully'
       };
     } catch (error) {
+      console.log(error);
       this.handleErrors(error,'forgotPassword');
     }
   }

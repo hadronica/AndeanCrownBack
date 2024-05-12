@@ -42,7 +42,22 @@ export class AuthService {
         skip:searchUsersDto.page?searchUsersDto.page:0,
         take:searchUsersDto.limit?searchUsersDto.limit:10,
       });
-      return users;
+
+      const total=await this.userRepository.count({
+        where:{
+          roles:'User',
+          document: searchUsersDto.numberDocument ? Like(`%${searchUsersDto.numberDocument}%`) : null,
+          status:searchUsersDto.status?searchUsersDto.status:null,
+          names: searchUsersDto.names ? ILike(`%${searchUsersDto.names}%`) : null,
+          created_at:searchUsersDto.dateCreation
+            ? Raw(alias => `DATE(${alias}) = '${searchUsersDto.dateCreation}'`)
+            : null
+        }
+      })
+      return {
+        users,
+        total
+        };
     } catch (error) {
       console.log(error);
       this.handleErrors(error,'findAll');

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {  Repository } from 'typeorm';
+import {  Between, ILike, Like, Raw, Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
@@ -13,6 +13,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import { customAlphabet } from 'nanoid';
 import { CreateUserMail } from './utility/createUserMail';
 import { restartPasswordMail } from './utility/restartPasswordMail';
+import { searchUsersDto } from './dto/search-users.dto';
 
 @Injectable()
 export class AuthService {
@@ -25,16 +26,25 @@ export class AuthService {
     private readonly mailerService:MailerService
   ){}
 
-  async findAll() {
+  async findAll(searchUsersDto:searchUsersDto) {
     try {
       const users = await this.userRepository.find({
         select:{password:false},
         where:{
-          roles:'User'
-        }
+          roles:'User',
+          document: searchUsersDto.numberDocument ? Like(`%${searchUsersDto.numberDocument}%`) : null,
+          status:searchUsersDto.status?searchUsersDto.status:null,
+          names: searchUsersDto.names ? ILike(`%${searchUsersDto.names}%`) : null,
+          created_at:searchUsersDto.dateCreation
+            ? Raw(alias => `DATE(${alias}) = '${searchUsersDto.dateCreation}'`)
+            : null
+        },
+        skip:searchUsersDto.page?searchUsersDto.page:0,
+        take:searchUsersDto.limit?searchUsersDto.limit:10,
       });
       return users;
     } catch (error) {
+      console.log(error);
       this.handleErrors(error,'findAll');
     }
   }

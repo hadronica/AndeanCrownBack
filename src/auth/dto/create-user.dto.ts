@@ -37,9 +37,9 @@ export class CreateUserDto {
     @IsOptional()
     token:string;
 
-    @ApiProperty({example:'User|Admin'})
+    @ApiProperty({example:'User|Admin|SuperAdmin'})
     @IsString()
-    @IsIn(['User','Admin'])
+    @IsIn(['User','Admin','SuperAdmin'])
     permissionAccount:string;
 
     @ApiProperty()

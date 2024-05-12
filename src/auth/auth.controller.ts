@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Put, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Headers, Query } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
@@ -7,6 +7,7 @@ import { ValidRoles } from './interfaces/valid-roles';
 import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './decorators/get-user.decorator';
+import { searchUsersDto } from './dto/search-users.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -15,8 +16,8 @@ export class AuthController {
 
   @Get('list')
   @Auth(ValidRoles.admin)
-  findAll() {
-    return this.authService.findAll();
+  findAll(@Query() searchUsersDto:searchUsersDto){
+    return this.authService.findAll(searchUsersDto);
   }
 
   @Post('register')

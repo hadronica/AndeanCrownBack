@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpCode, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles';
@@ -30,6 +30,7 @@ export class FilesController {
   }
 
   @Post('upload')
+  @HttpCode(200)
   @ApiResponse({status:201,description:'File uploaded successfully'})
   @ApiResponse({status:500,description:'Internal server error'})
   @Auth(ValidRoles.admin,ValidRoles.superadmin)

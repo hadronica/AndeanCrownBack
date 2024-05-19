@@ -82,7 +82,10 @@ export class FilesService {
             select:{
                 password:false,token_expire:false,token:false
             },order:{file:{created_At:'ASC'}}});
-            return files;
+
+            const countFiles= await this.userRepository.count({where:{roles:'User'}});
+
+            return {files,countFiles};
         } catch (error) {
             this.handleErrors(error,'findAll');
         }
@@ -96,7 +99,10 @@ export class FilesService {
             skip:searchFilesDto.page?searchFilesDto.page:0,
             take:searchFilesDto.limit?searchFilesDto.limit:10,
             order:{created_At:'ASC'}});
-            return files;
+            
+            const countFiles= await this.fileRepository.count({where:{user:{user_id}}});
+
+            return {files,countFiles};
         } catch (error) {
             this.handleErrors(error,'find');
         }
@@ -117,8 +123,7 @@ export class FilesService {
             return 'File deleted successfully';
         } catch (error) {
             this.handleErrors(error,'delete');
-        }
-    
+        }   
     }
 
 

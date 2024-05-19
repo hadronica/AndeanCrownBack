@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsOptional, IsString } from "class-validator";
+import { IsIn, IsOptional, IsString } from "class-validator";
 
 
 export class searchFilesDto{
@@ -14,4 +14,9 @@ export class searchFilesDto{
     @IsOptional()
     limit:number;
 
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    @IsIn(['1','3','6'])
+    lastFiles:number;
 }

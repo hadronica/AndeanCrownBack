@@ -10,10 +10,6 @@ export class CreateFileDto {
 
     @ApiProperty()
     @IsString()
-    urlStatementAccount:string;
-
-    @ApiProperty()
-    @IsString()
     emailUser:string;
 
     @ApiProperty()

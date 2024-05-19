@@ -26,6 +26,25 @@ export class AuthService {
     private readonly mailerService:MailerService
   ){}
 
+  async changeCredentials(body){
+    try {
+      const {email, password}=body;
+      console.log(process.env.TESTEO)
+      process.env.TESTEO=email;
+      return process.env.TESTEO;
+    } catch (error) {
+      this.handleErrors(error,'changeCredentials');
+    }
+  }
+
+  async viewenv(){
+    try {
+      return process.env.TESTEO;
+    } catch (error) {
+      this.handleErrors(error,'viewenv');
+    }
+  }
+
   async findAll(searchUsersDto:searchUsersDto) {
     try {
       const users = await this.userRepository.find({

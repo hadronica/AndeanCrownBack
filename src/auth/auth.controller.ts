@@ -15,13 +15,13 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('list')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
   findAll(@Query() searchUsersDto:searchUsersDto){
     return this.authService.findAll(searchUsersDto);
   }
 
   @Post('register')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @ApiResponse({status:201,description:'User created successfully'})
   @ApiResponse({status:400,description:'USER already exists'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -64,7 +64,7 @@ export class AuthController {
   }
 
   @Put('block')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @ApiResponse({status:201,description:'User blocked successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -73,7 +73,7 @@ export class AuthController {
   }
 
   @Put('unblock')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @ApiResponse({status:201,description:'User unblocked successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -82,7 +82,7 @@ export class AuthController {
   }
 
   @Put('delete')
-  @Auth(ValidRoles.admin)
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @ApiResponse({status:201,description:'User deleted successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -91,7 +91,7 @@ export class AuthController {
   }
 
   @Put('edit')
-  @Auth(ValidRoles.admin,ValidRoles.user)
+  @Auth(ValidRoles.admin,ValidRoles.user,ValidRoles.superadmin)
   @ApiResponse({status:201,description:'User edited successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
@@ -99,4 +99,13 @@ export class AuthController {
     return this.authService.editUser(user,updateUserDto);
   }
 
+  @Post('change-credentials')
+  changeCredentials(@Body() body){
+    return this.authService.changeCredentials(body);
+  }
+
+  @Post('view-env')
+  viewEnv(){
+    return this.authService.viewenv();
+  }
 }

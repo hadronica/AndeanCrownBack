@@ -14,9 +14,9 @@ import { searchUsersDto } from './dto/search-users.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Get('list')
+  @Post('list')
   @Auth(ValidRoles.admin,ValidRoles.superadmin)
-  findAll(@Query() searchUsersDto:searchUsersDto){
+  findAll(@Body() searchUsersDto:searchUsersDto){
     return this.authService.findAll(searchUsersDto);
   }
 

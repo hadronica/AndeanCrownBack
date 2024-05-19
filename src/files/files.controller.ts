@@ -13,11 +13,11 @@ import { searchFilesDto } from './dto/search.dto';
 export class FilesController {
   constructor(private readonly filesService: FilesService) {}
 
-  @Get('list')
+  @Post('list')
   @ApiResponse({status:200,description:'List of files'})
   @ApiResponse({status:500,description:'Internal server error'})
   @Auth(ValidRoles.admin,ValidRoles.superadmin)
-  findAll(@Query() searchFilesDto:searchFilesDto) {
+  findAll(@Body() searchFilesDto:searchFilesDto) {
     return this.filesService.findAll(searchFilesDto);
   }
 
@@ -39,11 +39,11 @@ export class FilesController {
     return this.filesService.uploadS3(createFileDto, file);
   }
 
-  @Get('find')
+  @Post('find')
   @Auth(ValidRoles.user)
   @ApiResponse({status:200,description:'List of files'})
   @ApiResponse({status:500,description:'Internal server error'})
-  find(@Headers('user_id') user_id:string,@Query() searchFilesDto:searchFilesDto){
+  find(@Headers('user_id') user_id:string,@Body() searchFilesDto:searchFilesDto){
     return this.filesService.find(user_id,searchFilesDto);
   }
 

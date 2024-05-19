@@ -21,7 +21,7 @@ export class FilesController {
     return this.filesService.findAll(searchFilesDto);
   }
 
-  @Get('download')
+  @Post('download')
   @ApiResponse({status:201,description:'File downloaded successfully'})
   @ApiResponse({status:500,description:'Internal server error'})
   @Auth(ValidRoles.user)
@@ -31,7 +31,7 @@ export class FilesController {
 
   @Post('upload')
   @HttpCode(200)
-  @ApiResponse({status:201,description:'File uploaded successfully'})
+  @ApiResponse({status:200,description:'File uploaded successfully'})
   @ApiResponse({status:500,description:'Internal server error'})
   @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @UseInterceptors(FileInterceptor('file'))

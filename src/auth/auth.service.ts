@@ -284,7 +284,9 @@ export class AuthService {
         token_expire:null
       });
       return {
-        message:'Password reset successfully'
+        message:'User verified successfully',
+        email:user.email,
+        token:this.getJwtToken({user_id:user.user_id})
       };
     } catch (error) {
       this.handleErrors(error,'resetPassword');

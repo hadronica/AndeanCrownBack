@@ -262,7 +262,7 @@ export class AuthService {
 
   async resetPassword(token:string,body:any){
     try {
-      const {password,repeatPassword}=body;
+      const {password,passwordConfirmed}=body;
       const user=await this.userRepository.findOne({
         where:{token}
       });
@@ -275,7 +275,7 @@ export class AuthService {
       if(user.token_expire.getTime()<Date.now()){
         throw new UnauthorizedException('Token expired');
       }
-      if(password!==repeatPassword){
+      if(password!==passwordConfirmed){
         throw new UnauthorizedException('Passwords do not match');
       }
       await this.userRepository.update(user.user_id,{

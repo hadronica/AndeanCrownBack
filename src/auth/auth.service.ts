@@ -96,6 +96,7 @@ export class AuthService {
         type_account:userData.typeAccount,
         roles:userData.permissionAccount,
         token:tokenVerification,
+        legal_representation:userData.legalRepresentation,
         status:1
       });
       await this.userRepository.save(user);
@@ -105,7 +106,7 @@ export class AuthService {
         from:process.env.MAIL_USER,
         to:user.email,
         subject:'Andean Crown SAF ha creado tu cuenta',
-        html:CreateUserMail(userData.names,url)
+        html:CreateUserMail(userData.names?userData.names:userData.legalRepresentation,url)
       })
       return {
         message:'User created successfully',
@@ -248,7 +249,7 @@ export class AuthService {
         from:process.env.MAIL_USER,
         to:user.email,
         subject:'Andean Crown - Recuperación de contraseña',
-        html:restartPasswordMail(user.names,`${process.env.RECOVERY_URL}?token=${token}`)
+        html:restartPasswordMail(userData.names?userData.names:userData.legalRepresentation,`${process.env.RECOVERY_URL}?token=${token}`)
       })
       return {
         message:'Token sent successfully'

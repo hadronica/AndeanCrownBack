@@ -249,7 +249,7 @@ export class AuthService {
         from:process.env.MAIL_USER,
         to:user.email,
         subject:'Andean Crown - Recuperación de contraseña',
-        html:restartPasswordMail(userData.names?userData.names:userData.legalRepresentation,`${process.env.RECOVERY_URL}?token=${token}`)
+        html:restartPasswordMail(user.names?user.names:user.legal_representation,`${process.env.RECOVERY_URL}?token=${token}`)
       })
       return {
         message:'Token sent successfully'

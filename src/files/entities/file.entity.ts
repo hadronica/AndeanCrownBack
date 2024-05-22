@@ -23,6 +23,11 @@ export class File{
     })
     downloaded:number;
 
+    @Column('timestamp',{
+        nullable:true
+    })
+    last_downloaded:Date;
+
     @ManyToOne(
         ()=>User,
         (user)=>user.file

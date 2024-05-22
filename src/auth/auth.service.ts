@@ -26,25 +26,6 @@ export class AuthService {
     private readonly mailerService:MailerService
   ){}
 
-  async changeCredentials(body){
-    try {
-      const {email, password}=body;
-      console.log(process.env.TESTEO)
-      process.env.TESTEO=email;
-      return process.env.TESTEO;
-    } catch (error) {
-      this.handleErrors(error,'changeCredentials');
-    }
-  }
-
-  async viewenv(){
-    try {
-      return process.env.TESTEO;
-    } catch (error) {
-      this.handleErrors(error,'viewenv');
-    }
-  }
-
   async findAll(searchUsersDto:searchUsersDto) {
     try {
       const users = await this.userRepository.find({
@@ -78,7 +59,6 @@ export class AuthService {
         total
         };
     } catch (error) {
-      console.log(error);
       this.handleErrors(error,'findAll');
     }
   }
@@ -113,8 +93,33 @@ export class AuthService {
       };
       
     } catch (error) {
-      console.log(error);
       this.handleErrors(error,'create')
+    }
+  }
+
+  async resendVerification(user_id:string){
+    try {
+      const user=await this.userRepository.findOne({
+        where:{user_id}
+      });
+      if(!user){
+        throw new UnauthorizedException('User not found');
+      }
+      const tokenVerification=customAlphabet(this.alphabet,10)();
+      await this.userRepository.update(user.user_id,{token:tokenVerification});
+      const url= `${process.env.CONFIRMATION_URL}?token=${tokenVerification}` 
+
+      await this.mailerService.sendMail({
+        from:process.env.MAIL_USER,
+        to:user.email,
+        subject:'Andean Crown SAF ha creado tu cuenta',
+        html:CreateUserMail(user.names?user.names:user.legal_representation,url)
+      })
+      return {
+        message:'Verification email sent successfully',
+      };
+    } catch (error) {
+      this.handleErrors(error,'resendVerification');
     }
   }
 
@@ -177,7 +182,6 @@ export class AuthService {
         token:this.getJwtToken({user_id:user.user_id})
       };
     } catch (error) {
-      console.log(error);
       this.handleErrors(error,'verifyUser');
     }
   }
@@ -255,7 +259,6 @@ export class AuthService {
         message:'Token sent successfully'
       };
     } catch (error) {
-      console.log(error);
       this.handleErrors(error,'forgotPassword');
     }
   }

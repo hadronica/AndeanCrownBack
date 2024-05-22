@@ -99,13 +99,13 @@ export class AuthController {
     return this.authService.editUser(user,updateUserDto);
   }
 
-  @Post('change-credentials')
-  changeCredentials(@Body() body){
-    return this.authService.changeCredentials(body);
+  @Post('resend-verification')
+  @Auth(ValidRoles.admin,ValidRoles.superadmin)
+  @ApiResponse({status:201,description:'Credentials sent successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  changeCredentials(@Body('user_id') user_id:string){
+    return this.authService.resendVerification(user_id);
   }
 
-  @Post('view-env')
-  viewEnv(){
-    return this.authService.viewenv();
-  }
 }

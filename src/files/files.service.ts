@@ -53,7 +53,6 @@ export class FilesService {
             await this.s3.send(upload);
             return 'File uploaded successfully';
         } catch (error) {
-            console.log(error);
             this.handleErrors(error,'uploadS3');
         }
     }
@@ -64,8 +63,12 @@ export class FilesService {
             if(!file){
                 throw new InternalServerErrorException('File not found');
             }
-            
-            await this.fileRepository.update({file_id},{downloaded:file.downloaded+1});
+            const lastDownloaded= new Date();
+            lastDownloaded.setTime(lastDownloaded.getTime() - (5 * 60 * 60 * 1000));
+            await this.fileRepository.update({file_id},
+                {   downloaded:file.downloaded+1,
+                    last_downloaded:lastDownloaded
+                });
             return 'File downloaded successfully';
         } catch (error) {
             this.handleErrors(error,'downloadS3');

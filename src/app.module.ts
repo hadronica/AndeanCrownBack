@@ -17,11 +17,11 @@ import { FilesModule } from './files/files.module';
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
       synchronize: true,
-      ssl:process.env.STAGE==='prod',
-      extra:{
-        ssl:process.env.STAGE==='prod'?{rejectUnauthorized:false}:null
+      // ssl:process.env.STAGE==='prod',
+      // extra:{
+      //   ssl:process.env.STAGE==='prod'?{rejectUnauthorized:false}:null
         
-      }
+      // }
     }),
     MailerModule.forRoot({
       transport:{

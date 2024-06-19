@@ -28,6 +28,11 @@ export class File{
     })
     last_downloaded:Date;
 
+    @Column('varchar',{
+        nullable:true
+    })
+    investment_type:string;
+
     @ManyToOne(
         ()=>User,
         (user)=>user.file

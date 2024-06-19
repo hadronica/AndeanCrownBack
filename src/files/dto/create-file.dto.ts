@@ -15,4 +15,8 @@ export class CreateFileDto {
     @ApiProperty()
     @IsString()
     nameDocument:string;
+
+    @ApiProperty()
+    @IsString()
+    tipoInversion:string;
 }

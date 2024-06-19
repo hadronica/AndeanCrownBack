@@ -26,7 +26,7 @@ export class FilesService {
 
     async uploadS3(createFileDto:CreateFileDto, file:Express.Multer.File) {
         try {
-            const {numberDocumentUser,emailUser,nameDocument} = createFileDto;
+            const {numberDocumentUser,emailUser,nameDocument,tipoInversion} = createFileDto;
             const user = await this.userRepository.findOne({where:{document:numberDocumentUser,email:emailUser}});
 
             if(!user){
@@ -37,7 +37,7 @@ export class FilesService {
 
             const params = {
                 Bucket:this.AWS_S3_BUCKET,
-                Key:`${user.document_type}${user.document}-${user.names?user.names:user.legal_representation}/${user.document_type}${user.document}-${nameDocument}`,
+                Key:`${user.document_type}${user.document}-${user.names?user.names:user.legal_representation}/${user.document_type}${user.document}-${nameDocument}-${tipoInversion}`,
                 Body:buffer,
                 ContentType:mimetype
             }
@@ -45,6 +45,7 @@ export class FilesService {
             const fileDB=this.fileRepository.create({
                 path:`${process.env.AWS_S3_URL}${encodeURIComponent(params.Key)}`,
                 name:nameDocument,
+                investment_type:tipoInversion,
                 user:user
             });
             await this.fileRepository.save(fileDB);

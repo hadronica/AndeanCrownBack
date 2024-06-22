@@ -28,6 +28,8 @@ export class AuthService {
 
   async findAll(searchUsersDto:searchUsersDto) {
     try {
+      const page = searchUsersDto.page ?? 1;
+      const limit = searchUsersDto.limit ?? 10;
       const users = await this.userRepository.find({
         select:{password:false},
         where:{
@@ -39,8 +41,8 @@ export class AuthService {
             ? Raw(alias => `DATE(${alias}) = '${searchUsersDto.dateCreation}'`)
             : null
         },
-        skip:searchUsersDto.page?searchUsersDto.page:0,
-        take:searchUsersDto.limit?searchUsersDto.limit:10,
+        skip: (page - 1) * limit,
+        take: limit,
       });
 
       const total=await this.userRepository.count({
@@ -54,9 +56,12 @@ export class AuthService {
             : null
         }
       })
+
+      const pages = Math.ceil(total / limit);
       return {
         users,
-        total
+        total,
+        pages
         };
     } catch (error) {
       this.handleErrors(error,'findAll');

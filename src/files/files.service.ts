@@ -78,19 +78,22 @@ export class FilesService {
 
     async findAll(searchFilesDto:searchFilesDto) {
         try {
+            const page = searchFilesDto.page ?? 1;
+            const limit = searchFilesDto.limit ?? 10;
             const files = await this.userRepository.find({relations:['file'],where:{
                 roles:'User'
             },
-            skip:searchFilesDto.page?searchFilesDto.page:0,
-            take:searchFilesDto.limit?searchFilesDto.limit:10,
+            skip: (page - 1) * limit,
+            take: limit,
             select:{
                 password:false,token_expire:false,token:false
             },order:{file:{created_At:'ASC'}}});
 
-            const countFiles= await this.userRepository.count({where:{roles:'User'}});
+            const countFiles= await this.fileRepository.count();
 
             return {files,countFiles};
         } catch (error) {
+            console.log(error)
             this.handleErrors(error,'findAll');
         }
     }

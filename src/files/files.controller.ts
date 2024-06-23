@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Headers, HttpCode, Post, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Headers, HttpCode, Post, Put, Query, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FilesService } from './files.service';
 import { Auth } from 'src/auth/decorators/auth.decorator';
 import { ValidRoles } from 'src/auth/interfaces/valid-roles';
@@ -47,7 +47,7 @@ export class FilesController {
     return this.filesService.find(user_id,searchFilesDto);
   }
 
-  @Delete('delete')
+  @Put('delete')
   @Auth(ValidRoles.admin,ValidRoles.superadmin)
   @ApiResponse({status:200,description:'File deleted successfully'})
   @ApiResponse({status:500,description:'Internal server error'})

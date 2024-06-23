@@ -93,7 +93,6 @@ export class FilesService {
 
             return {files,countFiles};
         } catch (error) {
-            console.log(error)
             this.handleErrors(error,'findAll');
         }
     }
@@ -117,18 +116,20 @@ export class FilesService {
 
     async delete(file_id:string){
         try {
-            const file = await this.userRepository.findOne({where:{file:{file_id}},relations:['file']});
-            if(!file){
+            const user = await this.userRepository.findOne({where:{file:{file_id}},relations:['file']});
+            if(!user){
                 throw new InternalServerErrorException('File not found');
             }
             await this.fileRepository.delete({file_id});
             const params = {
                 Bucket:this.AWS_S3_BUCKET,
-                Key:`${file.document_type}${file.document}-${file.names?file.names:file.legal_representation}/${file.document_type}${file.document}-${file.file[0].name}`,
+                Key:`${user.document_type}${user.document}-${user.names?user.names:user.legal_representation}/${user.document_type}${user.document}-${user.file[0].name}-${user.file[0].investment_type}`,
             }
-            await this.s3.send(new DeleteObjectCommand(params));
+            const deleteObj = new DeleteObjectCommand(params)
+            await this.s3.send(deleteObj);
             return 'File deleted successfully';
         } catch (error) {
+            console.log(error);
             this.handleErrors(error,'delete');
         }   
     }

@@ -86,8 +86,8 @@ export class AuthController {
   @ApiResponse({status:201,description:'User deleted successfully'})
   @ApiResponse({status:401,description:'User not found'})
   @ApiResponse({status:500,description:'Internal server error'})
-  deleteUser(@Headers('Token') token:string){
-    return this.authService.delete(token);
+  deleteUser(@Body('user_id') user_id:string){
+    return this.authService.delete(user_id);
   }
 
   @Put('edit')

@@ -4,7 +4,7 @@ import { File } from './entities/file.entity';
 import { Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
 import { CreateFileDto } from './dto/create-file.dto';
-import { DeleteObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { searchFilesDto } from './dto/search.dto';
 
 @Injectable()
@@ -133,7 +133,6 @@ export class FilesService {
             this.handleErrors(error,'delete');
         }   
     }
-
 
     private handleErrors(error: any,type:string):never{
         if(error.status===500){

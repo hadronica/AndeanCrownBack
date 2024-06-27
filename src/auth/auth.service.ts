@@ -14,16 +14,26 @@ import { customAlphabet } from 'nanoid';
 import { CreateUserMail } from './utility/createUserMail';
 import { restartPasswordMail } from './utility/restartPasswordMail';
 import { searchUsersDto } from './dto/search-users.dto';
+import { ChangeProfileDto } from './dto/change-auth.dto';
+import { FilesService } from '../files/files.service';
+import { DeleteObjectCommand, ListObjectsV2Command, S3Client } from '@aws-sdk/client-s3';
 
 @Injectable()
 export class AuthService {
-
+  private AWS_S3_BUCKET = process.env.AWS_S3_BUCKET;
+    private s3 = new S3Client({
+        region:process.env.AWS_S3_REGION,
+        credentials:{
+            accessKeyId:process.env.AWS_S3_ACCESS_KEY_ID,
+            secretAccessKey:process.env.AWS_S3_SECRET_ACCESS_KEY
+        }
+  })
   private alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService:JwtService,
-    private readonly mailerService:MailerService
+    private readonly mailerService:MailerService,
   ){}
 
   async findAll(searchUsersDto:searchUsersDto) {
@@ -233,9 +243,22 @@ export class AuthService {
       if(!user){
         throw new UnauthorizedException('User not found');
       }
-      await this.userRepository.delete(user.user_id)
+      const params = {
+        Bucket:this.AWS_S3_BUCKET,
+        Key:`${user.document_type}${user.document}-${user.names?user.names:user.legal_representation}`,
+      }
+      const resp= await this.s3.send(new ListObjectsV2Command(params));
+      const objects=resp.Contents;
+      for (const object of objects) {
+        const deleteObj = new DeleteObjectCommand({
+          Bucket:this.AWS_S3_BUCKET,
+          Key:object.Key
+        });
+        await this.s3.send(deleteObj);
+      }
+      //await this.userRepository.delete(user.user_id);
       return {
-        message:'User deleted successfully'
+        message:'User deleted successfully'	
       };
     } catch (error) {
       this.handleErrors(error,'delete');
@@ -320,6 +343,30 @@ export class AuthService {
       this.handleErrors(error,'editUser');
     }
   }
+
+  async changeProfile(changeProfileDto:ChangeProfileDto){
+    try {
+        const {user_id,...userData}=changeProfileDto;
+        const user=await this.userRepository.findOne({where:{user_id}});
+        if(!user){
+          throw new UnauthorizedException('User not found');
+        }
+        await this.userRepository.update(user.user_id,{
+          names:userData.names,
+          phone:userData.phone,
+          email:userData.email,
+          document_type:userData.typeDocument,
+          document:userData.numberDocument,
+          legal_representation:userData.legalRepresentation
+        });
+        return {
+          message:'Profile changed successfully'
+          };
+    } catch (error) {
+      this.handleErrors(error,'changeProfile');
+    }
+  }
+
 
   private getJwtToken(payload:JwtPayload){
     const token=this.jwtService.sign(payload);

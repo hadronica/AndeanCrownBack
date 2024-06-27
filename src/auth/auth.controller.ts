@@ -8,6 +8,7 @@ import { Auth } from './decorators/auth.decorator';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { GetUser } from './decorators/get-user.decorator';
 import { searchUsersDto } from './dto/search-users.dto';
+import { ChangeProfileDto } from './dto/change-auth.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -97,6 +98,15 @@ export class AuthController {
   @ApiResponse({status:500,description:'Internal server error'})
   editUser(@GetUser() user,@Body() updateUserDto: UpdateUserDto){
     return this.authService.editUser(user,updateUserDto);
+  }
+
+  @Put('change-profile')
+  @Auth(ValidRoles.superadmin)
+  @ApiResponse({status:201,description:'Profile changed successfully'})
+  @ApiResponse({status:401,description:'User not found'})
+  @ApiResponse({status:500,description:'Internal server error'})
+  changeProfile(@Body() changeProfileDto:ChangeProfileDto){
+    return this.authService.changeProfile(changeProfileDto);
   }
 
   @Post('resend-verification')

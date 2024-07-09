@@ -19,4 +19,9 @@ export class searchFilesDto{
     @IsOptional()
     @IsIn(['1','3','6'])
     lastFiles:number;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    user:string;
 }

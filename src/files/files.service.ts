@@ -1,7 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { File } from './entities/file.entity';
-import { Repository } from 'typeorm';
+import { ILike, Or, Repository } from 'typeorm';
 import { User } from '../auth/entities/user.entity';
 import { CreateFileDto } from './dto/create-file.dto';
 import { DeleteObjectCommand, ListObjectsV2Command, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
@@ -83,6 +83,16 @@ export class FilesService {
 
             const filesPrev = await this.fileRepository.find({
             relations:['user'],
+            where:
+                [
+                    {
+                        user:{names:searchFilesDto.user? ILike(`%${searchFilesDto.user}`):null}
+    
+                    },
+                    {
+                        user:{legal_representation:searchFilesDto.user? ILike(`%${searchFilesDto.user}`):null}
+                    }
+                ],
             select:{
                 user:{
                     names:true,
@@ -104,7 +114,19 @@ export class FilesService {
                 user_name: file.user.names?file.user.names:file.user.legal_representation
             }));
 
-            const countFiles= await this.fileRepository.count();
+            const countFiles= await this.fileRepository.count({
+                relations:['user'],
+                where:
+                [
+                    {
+                        user:{names:searchFilesDto.user? ILike(`%${searchFilesDto.user}`):null}
+    
+                    },
+                    {
+                        user:{legal_representation:searchFilesDto.user? ILike(`%${searchFilesDto.user}`):null}
+                    }
+                ]
+            });
 
             return {files,countFiles};
         } catch (error) {

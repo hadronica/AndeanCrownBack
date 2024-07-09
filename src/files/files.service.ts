@@ -80,14 +80,29 @@ export class FilesService {
         try {
             const page = searchFilesDto.page ?? 1;
             const limit = searchFilesDto.limit ?? 10;
-            const files = await this.userRepository.find({relations:['file'],where:{
-                roles:'User'
+
+            const filesPrev = await this.fileRepository.find({
+            relations:['user'],
+            select:{
+                user:{
+                    names:true,
+                    legal_representation:true
+                }
             },
             skip: (page - 1) * limit,
             take: limit,
-            select:{
-                password:false,token_expire:false,token:false
-            },order:{file:{created_At:'ASC'}}});
+            order:{created_At:'ASC'}});
+
+            const files = filesPrev.map(file => ({
+                file_id: file.file_id,
+                created_At: file.created_At,
+                path: file.path,
+                name: file.name,
+                downloaded: file.downloaded,
+                last_downloaded: file.last_downloaded,
+                investment_type: file.investment_type,
+                user_name: file.user.names?file.user.names:file.user.legal_representation
+            }));
 
             const countFiles= await this.fileRepository.count();
 

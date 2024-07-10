@@ -74,7 +74,6 @@ export class AuthService {
         pages
         };
     } catch (error) {
-      console.log(error)
       this.handleErrors(error,'findAll');
     }
   }

@@ -82,14 +82,14 @@ export class AuthController {
     return this.authService.unblockUser(token);
   }
 
-  @Put('delete')
-  @Auth(ValidRoles.admin,ValidRoles.superadmin)
-  @ApiResponse({status:201,description:'User deleted successfully'})
-  @ApiResponse({status:401,description:'User not found'})
-  @ApiResponse({status:500,description:'Internal server error'})
-  deleteUser(@Body('user_id') user_id:string){
-    return this.authService.delete(user_id);
-  }
+  // @Put('delete')
+  // @Auth(ValidRoles.admin,ValidRoles.superadmin)
+  // @ApiResponse({status:201,description:'User deleted successfully'})
+  // @ApiResponse({status:401,description:'User not found'})
+  // @ApiResponse({status:500,description:'Internal server error'})
+  // deleteUser(@Body('user_id') user_id:string){
+  //   return this.authService.delete(user_id);
+  // }
 
   @Put('edit')
   @Auth(ValidRoles.admin,ValidRoles.user,ValidRoles.superadmin)

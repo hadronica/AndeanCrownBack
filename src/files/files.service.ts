@@ -166,7 +166,6 @@ export class FilesService {
             await this.s3.send(deleteObj);
             return 'File deleted successfully';
         } catch (error) {
-            console.log(error);
             this.handleErrors(error,'delete');
         }   
     }

@@ -16,7 +16,7 @@ import { FilesModule } from './files/files.module';
       database: process.env.DB_DATABASE,
       password: process.env.DB_PASSWORD,
       autoLoadEntities: true,
-      // synchronize: true,
+      //synchronize: true,
       //  ssl:process.env.STAGE==='prod',
       //  extra:{
       //    ssl:process.env.STAGE==='prod'?{rejectUnauthorized:false}:null

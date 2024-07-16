@@ -92,6 +92,7 @@ export class AuthService {
         roles:userData.permissionAccount,
         token:tokenVerification,
         legal_representation:userData.legalRepresentation,
+        alias:userData.alias,
         status:1
       });
       await this.userRepository.save(user);
@@ -357,7 +358,10 @@ export class AuthService {
           email:userData.email,
           document_type:userData.typeDocument,
           document:userData.numberDocument,
-          legal_representation:userData.legalRepresentation
+          legal_representation:userData.legalRepresentation,
+          alias:userData.alias,
+          type_account:userData.typeAccount,
+          roles:userData.permissionAccount
         });
         return {
           message:'Profile changed successfully'

@@ -1,7 +1,7 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsOptional, IsString } from 'class-validator';
+import { IsEmail, IsIn, IsOptional, IsString } from 'class-validator';
 
 export class ChangeProfileDto {
     @ApiProperty()
@@ -37,5 +37,22 @@ export class ChangeProfileDto {
     @ApiProperty()
     @IsString()
     user_id:string;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    alias:string;
+
+    @ApiProperty({example:'J|N'})
+    @IsString()
+    @IsIn(['J','N'])
+    @IsOptional()
+    typeAccount:string;
+
+    @ApiProperty({example:'User|Admin|SuperAdmin'})
+    @IsString()
+    @IsOptional()
+    @IsIn(['User','Admin','SuperAdmin'])
+    permissionAccount:string;
 
 }

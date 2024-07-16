@@ -47,8 +47,15 @@ export class CreateUserDto {
     @IsOptional()
     legalRepresentation:string;
 
+    @ApiProperty({default:1})
     @IsNumber()
     @IsIn([0,1,2])
     @IsOptional()
     status:number;
+
+    @ApiProperty()
+    @IsString()
+    @IsOptional()
+    alias:string;
+
 }

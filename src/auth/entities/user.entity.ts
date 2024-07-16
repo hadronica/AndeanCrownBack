@@ -73,6 +73,10 @@ export class User {
     })
     last_login:Date;
 
+    @Column('varchar',{
+        nullable:true,
+    })
+    alias:string;
 
     @OneToMany(
         ()=> File,
